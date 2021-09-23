@@ -20,22 +20,22 @@ from generate_ui import GenerateUI
 
 def check_credentials(window, connection: Connection, username: str, password: str):
     if utils.verify_user(connection, username, password):
-        utils.show_message(f'Welcome, {username}. Please enter the information present in the window to generate '
-                           f'your password.')
-        ui = GenerateUI(window)
+        utils.show_message(f"Welcome, {username}. Please enter the information present in the window to generate "
+                           f"your password.")
+        ui = GenerateUI(window, password)
         ui.setup_ui()
         window.show()
     else:
-        utils.show_error('The entered credentials are invalid!', window)
+        utils.show_error("The entered credentials are invalid!", window)
 
 
 def register(window, connection: Connection, username: QtWidgets.QLineEdit, password: QtWidgets.QLineEdit):
     if utils.check_user_exists(connection, username.text()):
-        utils.show_error('The user with this name already exists! Please register with different username.', window)
+        utils.show_error("The user with this name already exists! Please register with different username.", window)
         return
 
     utils.register_user(connection, username.text(), password.text())
-    utils.show_message('Your account has been registered. Please proceed to log into your account.')
+    utils.show_message("Your account has been registered. Please proceed to log into your account.")
     username.setText("")
     password.setText("")
 

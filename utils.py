@@ -16,20 +16,28 @@ import config
 import sys
 import pymysql
 import hashlib
-from PyQt5 import QtWidgets
+from PyQt5 import QtWidgets, QtCore
 
-secure_salt = 'unified-pass-salt'
+secure_salt = "unified-pass-salt"
+
+
+def get_default_message_box(text: str, window=None) -> QtWidgets.QMessageBox:
+    error = QtWidgets.QMessageBox()
+    if window is not None:
+        error.setWindowIcon(window.windowIcon())
+    error.setWindowTitle("UnifiedPass")
+    error.setText(text)
+
+    return error
 
 
 def show_error(text: str,
                window=None,
                icon=QtWidgets.QMessageBox.Icon.Critical,
                button=QtWidgets.QMessageBox.StandardButton.Close):
-    error = QtWidgets.QMessageBox(window)
-    error.setIcon(icon)
+    error = get_default_message_box(text, window)
     error.setStandardButtons(button)
-    error.setWindowTitle("UnifiedPass")
-    error.setText(text)
+    error.setIcon(icon)
     error.exec_()
 
 
@@ -37,12 +45,24 @@ def show_message(text: str,
                  window=None,
                  icon=QtWidgets.QMessageBox.Icon.Information,
                  button=QtWidgets.QMessageBox.StandardButton.Close):
-    error = QtWidgets.QMessageBox(window)
+    error = get_default_message_box(text, window)
     error.setIcon(icon)
     error.setStandardButtons(button)
-    error.setWindowTitle("UnifiedPass")
-    error.setText(text)
     error.exec_()
+
+
+def get_input(text: str, window=None) -> str:
+    input_box = QtWidgets.QInputDialog()
+    input_box.setWindowTitle("UnifiedPass")
+    input_box.setLabelText(text)
+    input_box.setWindowFlag(QtCore.Qt.WindowSystemMenuHint, False)
+    input_box.setWindowFlag(QtCore.Qt.WindowTitleHint, False)
+    input_box.setFixedSize(250, 200)
+    if window is not None:
+        input_box.setWindowIcon(window.windowIcon())
+
+    input_box.exec_()
+    return input_box.textValue()
 
 
 def create_connection(window):
@@ -63,29 +83,33 @@ def create_connection(window):
 
 def check_user_exists(connection: pymysql.Connection, username: str) -> bool:
     with connection.cursor() as cursor:
-        query = 'SELECT COUNT(id) AS count FROM unifiedpass.information WHERE username=%s'
+        query = "SELECT COUNT(id) AS count FROM unifiedpass.information WHERE username=%s"
         cursor.execute(query, username)
         result = cursor.fetchone()
 
-        if result['count'] > 0:
+        if result["count"] > 0:
             return True
         else:
             return False
 
 
+def get_hashed_password(password: str) -> str:
+    return hashlib.pbkdf2_hmac("SHA256", password.encode("UTF-8"), secure_salt.encode("UTF-8"), 10000, 32).hex()
+
+
 def register_user(connection: pymysql.Connection, username: str, password: str):
-    pass_hash = hashlib.sha256((secure_salt + password).encode('UTF-8')).hexdigest()
+    pass_hash = get_hashed_password(password)
     with connection.cursor() as cursor:
-        query = 'INSERT INTO unifiedpass.information (username, password) VALUES (%s, %s)'
+        query = "INSERT INTO unifiedpass.information (username, password) VALUES (%s, %s)"
         cursor.execute(query, (username, pass_hash))
         connection.commit()
 
 
 def verify_user(connection: pymysql.Connection, username: str, password: str) -> bool:
-    pass_hash = hashlib.sha256((secure_salt + password).encode('UTF-8')).hexdigest()
+    pass_hash = get_hashed_password(password)
     with connection.cursor() as cursor:
-        query = 'SELECT COUNT(*) AS count FROM unifiedpass.information WHERE username=%s AND password=%s'
+        query = "SELECT COUNT(*) AS count FROM unifiedpass.information WHERE username=%s AND password=%s"
         cursor.execute(query, (username, pass_hash))
         result = cursor.fetchone()
 
-        return result['count'] > 0
+        return result["count"] > 0

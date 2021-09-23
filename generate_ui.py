@@ -12,11 +12,38 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import utils
+import password as pass_hash
+import pyperclip
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
+def generate_password(window,
+                      website: QtWidgets.QLineEdit,
+                      email: QtWidgets.QLineEdit,
+                      number: QtWidgets.QLineEdit,
+                      master_password: str):
+    length = utils.get_input("Enter the length of the password", window)
+    secure_number: int
+    try:
+        length = int(length)
+        secure_number = int(number.text())
+    except Exception as _:
+        utils.show_error("Please make sure the security number and the password length are both numbers.")
+        return
+
+    final_pass = pass_hash.generate_password(website.text(), email.text(), secure_number, length, master_password)
+    pyperclip.copy(final_pass)
+    utils.show_message(f"The password for {website.text()} is {final_pass}. The password has also been copied to "
+                       "your clipboard.")
+
+    website.setText("")
+    email.setText("")
+    number.setText("")
+
+
 class GenerateUI:
-    def __init__(self, window):
+    def __init__(self, window, _password: str):
         self.central_widget = QtWidgets.QWidget(window)
         self.title = QtWidgets.QLabel(self.central_widget)
         self.website = QtWidgets.QLineEdit(self.central_widget)
@@ -31,6 +58,7 @@ class GenerateUI:
         self.statusbar = QtWidgets.QStatusBar(window)
         self.menubar = QtWidgets.QMenuBar(window)
         self.window = window
+        self._password = _password
 
     def setup_ui(self):
         self.window.setObjectName("window")
@@ -87,6 +115,9 @@ class GenerateUI:
                                         "background-color: #bdbdbd;\n"
                                         "border-radius: 8px;")
         self.generate_btn.setObjectName("generate_btn")
+        self.generate_btn.clicked.connect(lambda: generate_password(
+            self.window, self.website, self.email, self.number, self._password
+        ))
 
         self.underline.setGeometry(QtCore.QRect(240, 190, 461, 20))
         self.underline.setFont(font)
