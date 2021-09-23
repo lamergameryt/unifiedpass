@@ -13,23 +13,23 @@
 #  limitations under the License.
 
 import sys
-import utils
-from PyQt5 import QtWidgets, QtGui
-from login_ui import LoginUI
+from cx_Freeze import setup, Executable
 
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
+build_exe_options = {
+    "optimize": 1,
+    "include_files": ["assets/"],
+    "packages": ["os", "PyQt5", "pyperclip", "pymysql"],
+    "excludes": ["tkinter"]
+}
 
-    QtGui.QFontDatabase.addApplicationFont("assets/OpenSans-Regular.ttf")
-    QtGui.QFontDatabase.addApplicationFont("assets/Montserrat-Regular.ttf")
-    icon = QtGui.QIcon("assets/icon.png")
+base = None
+if sys.platform == "win32":
+    base = "Win32GUI"
 
-    window = QtWidgets.QMainWindow()
-    window.setWindowIcon(icon)
-    connection = utils.create_connection(window)
-
-    ui = LoginUI(window, connection)
-    ui.setup_ui()
-    window.show()
-
-    sys.exit(app.exec_())
+setup(
+    name="UnifiedPass",
+    version="1.0",
+    description="A system independent credential manager.",
+    options={"build_exe": build_exe_options},
+    executables=[Executable("main.py", base=base, icon='assets/icon.png')]
+)

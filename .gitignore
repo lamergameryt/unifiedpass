@@ -322,3 +322,5 @@ compile_commands.json
 
 *.pdt
 config.py
+LICENSE.txt
+inno_setup/
