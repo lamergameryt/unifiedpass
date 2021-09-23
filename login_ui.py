@@ -12,11 +12,36 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+import utils
+from pymysql import Connection
 from PyQt5 import QtCore, QtGui, QtWidgets
+from generate_ui import GenerateUI
+
+
+def check_credentials(window, connection: Connection, username: str, password: str):
+    if utils.verify_user(connection, username, password):
+        utils.show_message(f'Welcome, {username}. Please enter the information present in the window to generate '
+                           f'your password.')
+        ui = GenerateUI(window)
+        ui.setup_ui()
+        window.show()
+    else:
+        utils.show_error('The entered credentials are invalid!', window)
+
+
+def register(window, connection: Connection, username: QtWidgets.QLineEdit, password: QtWidgets.QLineEdit):
+    if utils.check_user_exists(connection, username.text()):
+        utils.show_error('The user with this name already exists! Please register with different username.', window)
+        return
+
+    utils.register_user(connection, username.text(), password.text())
+    utils.show_message('Your account has been registered. Please proceed to log into your account.')
+    username.setText("")
+    password.setText("")
 
 
 class LoginUI:
-    def __init__(self, window):
+    def __init__(self, window, connection):
         self.central_widget = QtWidgets.QWidget(window)
         self.title = QtWidgets.QLabel(self.central_widget)
         self.statusbar = QtWidgets.QStatusBar(window)
@@ -29,11 +54,14 @@ class LoginUI:
         self.underline = QtWidgets.QFrame(self.central_widget)
         self.underline_2 = QtWidgets.QFrame(self.central_widget)
 
-    def setup_ui(self, window):
-        window.setObjectName("window")
-        window.resize(926, 563)
-        window.setStyleSheet("background-color: #1f1f1f")
-        window.setTabShape(QtWidgets.QTabWidget.Rounded)
+        self.window = window
+        self.connection = connection
+
+    def setup_ui(self):
+        self.window.setObjectName("window")
+        self.window.setFixedSize(926, 563)
+        self.window.setStyleSheet("background-color: #1f1f1f")
+        self.window.setTabShape(QtWidgets.QTabWidget.Rounded)
 
         size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         size_policy.setHorizontalStretch(0)
@@ -57,14 +85,6 @@ class LoginUI:
         self.underline.setGeometry(QtCore.QRect(230, 240, 461, 20))
 
         font = QtGui.QFont()
-        font.setStyleStrategy(QtGui.QFont.PreferAntialias)
-        self.underline.setFont(font)
-        self.underline.setStyleSheet("color: #D0D0D0;")
-        self.underline.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.underline.setFrameShape(QtWidgets.QFrame.HLine)
-        self.underline.setObjectName("line")
-
-        font = QtGui.QFont()
         font.setFamily("Open Sans")
         font.setPointSize(12)
         font.setStyleStrategy(QtGui.QFont.PreferAntialias)
@@ -83,13 +103,6 @@ class LoginUI:
         self.password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.password.setObjectName("password")
 
-        self.underline_2.setGeometry(QtCore.QRect(230, 320, 461, 20))
-        self.underline_2.setFont(font)
-        self.underline_2.setStyleSheet("color: #D0D0D0;")
-        self.underline_2.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.underline_2.setFrameShape(QtWidgets.QFrame.HLine)
-        self.underline_2.setObjectName("underline_2")
-
         self.login_btn.setGeometry(QtCore.QRect(230, 360, 211, 51))
         self.login_btn.setFont(font)
         self.login_btn.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
@@ -97,6 +110,9 @@ class LoginUI:
                                      "background-color: #bdbdbd;\n"
                                      "border-radius: 8px;")
         self.login_btn.setObjectName("login_btn")
+        self.login_btn.clicked.connect(lambda: check_credentials(
+            self.window, self.connection, self.username.text(), self.password.text()
+        ))
 
         self.register_btn.setGeometry(QtCore.QRect(480, 360, 211, 51))
         self.register_btn.setFont(font)
@@ -105,21 +121,39 @@ class LoginUI:
                                         "background-color: #bdbdbd;\n"
                                         "border-radius: 8px;")
         self.register_btn.setObjectName("register_btn")
+        self.register_btn.clicked.connect(lambda: register(self.window, self.connection, self.username, self.password))
 
+        font = QtGui.QFont()
+        font.setStyleStrategy(QtGui.QFont.PreferAntialias)
+
+        self.underline.setFont(font)
+        self.underline.setStyleSheet("color: #D0D0D0;")
+        self.underline.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.underline.setFrameShape(QtWidgets.QFrame.HLine)
+        self.underline.setObjectName("line")
+
+        self.underline_2.setGeometry(QtCore.QRect(230, 320, 461, 20))
+        self.underline_2.setFont(font)
+        self.underline_2.setStyleSheet("color: #D0D0D0;")
+        self.underline_2.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.underline_2.setFrameShape(QtWidgets.QFrame.HLine)
+        self.underline_2.setObjectName("underline_2")
+
+        # noinspection DuplicatedCode
         self.menubar.setGeometry(QtCore.QRect(0, 0, 926, 26))
         self.menubar.setObjectName("menubar")
         self.statusbar.setObjectName("statusbar")
 
-        window.setCentralWidget(self.central_widget)
-        window.setMenuBar(self.menubar)
-        window.setStatusBar(self.statusbar)
+        self.window.setCentralWidget(self.central_widget)
+        self.window.setMenuBar(self.menubar)
+        self.window.setStatusBar(self.statusbar)
 
-        self.retranslate_ui(window)
-        QtCore.QMetaObject.connectSlotsByName(window)
+        self.retranslate_ui()
+        QtCore.QMetaObject.connectSlotsByName(self.window)
 
-    def retranslate_ui(self, window):
+    def retranslate_ui(self):
         _translate = QtCore.QCoreApplication.translate
-        window.setWindowTitle(_translate("window", "UnifiedPass"))
+        self.window.setWindowTitle(_translate("window", "UnifiedPass"))
         self.title.setText(_translate("window", "Log Into UnifiedPass"))
         self.username.setPlaceholderText(_translate("window", "Username"))
         self.password.setPlaceholderText(_translate("window", "Password"))

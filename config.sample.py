@@ -12,21 +12,12 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import sys
-import utils
-from PyQt5 import QtWidgets, QtGui
-from login_ui import LoginUI
+"""
+Configure the MySQL database values accordingly.
+"""
 
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    icon = QtGui.QIcon("assets/icon.png")
-
-    window = QtWidgets.QMainWindow()
-    window.setWindowIcon(icon)
-    connection = utils.create_connection(window)
-
-    ui = LoginUI(window, connection)
-    ui.setup_ui()
-    window.show()
-
-    sys.exit(app.exec_())
+ip = "localhost"
+port = 3306
+username = "username"
+password = "password"
+database = "unifiedpass"

@@ -321,3 +321,4 @@ compile_commands.json
 *.cflags
 
 *.pdt
+config.py
