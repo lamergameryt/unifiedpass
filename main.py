@@ -18,6 +18,9 @@ from PyQt5 import QtWidgets, QtGui
 from login_ui import LoginUI
 
 if __name__ == "__main__":
+    QtGui.QFontDatabase.addApplicationFont("assets/Montserrat-Regular.ttf")
+    QtGui.QFontDatabase.addApplicationFont("assets/OpenSans-Regular.ttf")
+
     app = QtWidgets.QApplication(sys.argv)
     icon = QtGui.QIcon("assets/icon.png")
 
