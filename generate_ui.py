@@ -44,6 +44,10 @@ def generate_password(window,
         utils.show_error("Please make sure the password length is specified.", website)
         return
 
+    if length > 40:
+        utils.show_error("Please make sure the password length is less than 40 characters.", website)
+        return
+
     final_pass = pass_hash.generate_password(website.text(), email.text(), secure_number, length, master_password)
     pyperclip.copy(final_pass)
     utils.show_message(f"The password for {website.text()} is {final_pass}. The password has also been copied to "
