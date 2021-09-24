@@ -35,7 +35,7 @@ def generate_password(window,
     final_pass = pass_hash.generate_password(website.text(), email.text(), secure_number, length, master_password)
     pyperclip.copy(final_pass)
     utils.show_message(f"The password for {website.text()} is {final_pass}. The password has also been copied to "
-                       "your clipboard.")
+                       "your clipboard.", window)
 
     website.setText("")
     email.setText("")

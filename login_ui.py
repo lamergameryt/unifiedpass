@@ -21,7 +21,7 @@ from generate_ui import GenerateUI
 def check_credentials(window, connection: Connection, username: str, password: str):
     if utils.verify_user(connection, username, password):
         utils.show_message(f"Welcome, {username}. Please enter the information present in the window to generate "
-                           f"your password.")
+                           f"your password.", window)
         ui = GenerateUI(window, password)
         ui.setup_ui()
         window.show()
@@ -35,7 +35,7 @@ def register(window, connection: Connection, username: QtWidgets.QLineEdit, pass
         return
 
     utils.register_user(connection, username.text(), password.text())
-    utils.show_message("Your account has been registered. Please proceed to log into your account.")
+    utils.show_message("Your account has been registered. Please proceed to log into your account.", window)
     username.setText("")
     password.setText("")
 
