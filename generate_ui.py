@@ -156,7 +156,7 @@ class GenerateUI:
         _translate = QtCore.QCoreApplication.translate
         self.window.setWindowTitle(_translate("window", "UnifiedPass"))
         self.title.setText(_translate("window", "UnifiedPass"))
-        self.website.setPlaceholderText(_translate("window", "Website Link"))
+        self.website.setPlaceholderText(_translate("window", "Website"))
         self.email.setPlaceholderText(_translate("window", "Username / Email"))
         self.number.setPlaceholderText(_translate("window", "Security Number"))
         self.generate_btn.setText(_translate("window", "Generate Password"))
