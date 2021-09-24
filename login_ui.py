@@ -19,6 +19,14 @@ from generate_ui import GenerateUI
 
 
 def check_credentials(window, connection: Connection, username: str, password: str):
+    if not username.rstrip():
+        utils.show_error("Please enter a valid username.", window)
+        return
+
+    if not password.rsplit():
+        utils.show_error("Please enter a valid password.", window)
+        return
+
     if utils.verify_user(connection, username, password):
         utils.show_message(f"Welcome, {username}. Please enter the information present in the window to generate "
                            f"your password.", window)
@@ -34,7 +42,15 @@ def register(window, connection: Connection, username: QtWidgets.QLineEdit, pass
         utils.show_error("The user with this name already exists! Please register with different username.", window)
         return
 
-    utils.register_user(connection, username.text(), password.text())
+    if len(username.text().rstrip()) < 4:
+        utils.show_error("The username cannot be shorter than 4 characters.", window)
+        return
+
+    if len(password.text().rstrip()) < 8:
+        utils.show_error("Please make sure your password is atleast 8 characters long.", window)
+        return
+
+    utils.register_user(connection, username.text().rstrip(), password.text().rstrip())
     utils.show_message("Your account has been registered. Please proceed to log into your account.", window)
     username.setText("")
     password.setText("")

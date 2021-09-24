@@ -24,12 +24,24 @@ def generate_password(window,
                       number: QtWidgets.QLineEdit,
                       master_password: str):
     length = utils.get_input("Enter the length of the password", window)
-    secure_number: int
+
+    if not website.text().rstrip():
+        utils.show_error("The website cannot be empty!", window)
+        return
+
+    if not email.text().rstrip():
+        utils.show_error("The username / email cannot be empty!", window)
+        return
+
     try:
-        length = int(length)
         secure_number = int(number.text())
     except Exception as _:
-        utils.show_error("Please make sure the security number and the password length are both numbers.")
+        secure_number = 0
+
+    try:
+        length = int(length)
+    except Exception as _:
+        utils.show_error("Please make sure the password length is specified.", website)
         return
 
     final_pass = pass_hash.generate_password(website.text(), email.text(), secure_number, length, master_password)
