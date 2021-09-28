@@ -23,8 +23,6 @@ def generate_password(window,
                       email: QtWidgets.QLineEdit,
                       number: QtWidgets.QLineEdit,
                       master_password: str):
-    length = utils.get_input("Enter the length of the password", window)
-
     if not website.text().rstrip():
         utils.show_error("The website cannot be empty!", window)
         return
@@ -38,14 +36,18 @@ def generate_password(window,
     except Exception as _:
         secure_number = 0
 
+    length = utils.get_input("Enter the length of the password", window)
     try:
         length = int(length)
     except Exception as _:
-        utils.show_error("Please make sure the password length is specified.", website)
+        utils.show_error("Please make sure the password length is specified.", window)
         return
 
     if length > 40:
-        utils.show_error("Please make sure the password length is less than 40 characters.", website)
+        utils.show_error("Please make sure the password length is less than 40 characters.", window)
+        return
+    elif length < 8:
+        utils.show_error("Please make sure the password length is greater than 8 characters.", window)
         return
 
     final_pass = pass_hash.generate_password(website.text(), email.text(), secure_number, length, master_password)

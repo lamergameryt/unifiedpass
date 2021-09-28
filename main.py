@@ -13,12 +13,17 @@
 #  limitations under the License.
 
 import sys
+import os
 import utils
-from PyQt5 import QtWidgets, QtGui
+from PyQt5 import QtWidgets, QtGui, QtCore
 from login_ui import LoginUI
 
 if __name__ == "__main__":
+    os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
+    os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
+
     app = QtWidgets.QApplication(sys.argv)
+    app.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
 
     QtGui.QFontDatabase.addApplicationFont("assets/OpenSans-Regular.ttf")
     QtGui.QFontDatabase.addApplicationFont("assets/Montserrat-Regular.ttf")
