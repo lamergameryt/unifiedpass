@@ -20,7 +20,7 @@ from PyQt5 import QtWidgets, QtGui, QtCore
 from login_ui import LoginUI
 
 if __name__ == "__main__":
-    pyhibp.set_user_agent('UnifiedPass/1.1.2 (A system independent credential manager)')
+    pyhibp.set_user_agent('UnifiedPass/1.2.1 (A system independent credential manager)')
     os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
     os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
 
