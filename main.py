@@ -15,15 +15,17 @@
 import sys
 import os
 import utils
+import pyhibp
 from PyQt5 import QtWidgets, QtGui, QtCore
 from login_ui import LoginUI
 
 if __name__ == "__main__":
+    pyhibp.set_user_agent('UnifiedPass/1.1.2 (A system independent credential manager)')
     os.environ["QT_AUTO_SCREEN_SCALE_FACTOR"] = "1"
     os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "1"
 
+    QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
     app = QtWidgets.QApplication(sys.argv)
-    app.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling)
 
     QtGui.QFontDatabase.addApplicationFont("assets/OpenSans-Regular.ttf")
     QtGui.QFontDatabase.addApplicationFont("assets/Montserrat-Regular.ttf")

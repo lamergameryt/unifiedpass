@@ -16,7 +16,7 @@ import utils
 from pymysql import Connection
 from PyQt5 import QtCore, QtGui, QtWidgets
 from generate_ui import GenerateUI
-
+from pyhibp import pwnedpasswords as pw
 
 def check_credentials(window, connection: Connection, username: str, password: str):
     if not username.rstrip():
@@ -48,6 +48,12 @@ def register(window, connection: Connection, username: QtWidgets.QLineEdit, pass
 
     if len(password.text().rstrip()) < 8:
         utils.show_error("Please make sure your password is atleast 8 characters long.", window)
+        return
+
+    result = pw.is_password_breached(password=password.text().rstrip())
+    if result:
+        utils.show_error(f"The password you're using has been leaked online {result} times. "
+                         f"Please register with a different password.", window)
         return
 
     utils.register_user(connection, username.text().rstrip(), password.text().rstrip())
