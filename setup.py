@@ -19,7 +19,7 @@ build_exe_options = {
     "optimize": 1,
     "include_files": ["assets/"],
     "packages": ["os", "PyQt5", "pyperclip", "pymysql"],
-    "excludes": ["tkinter"]
+    "excludes": ["tkinter"],
 }
 
 base = None
@@ -31,5 +31,5 @@ setup(
     version="1.0",
     description="A system independent credential manager.",
     options={"build_exe": build_exe_options},
-    executables=[Executable("main.py", base=base, icon='assets/icon.png')]
+    executables=[Executable("main.py", base=base, icon="assets/icon.png")],
 )

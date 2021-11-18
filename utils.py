@@ -31,20 +31,24 @@ def get_default_message_box(text: str, window=None) -> QtWidgets.QMessageBox:
     return error
 
 
-def show_error(text: str,
-               window=None,
-               icon=QtWidgets.QMessageBox.Icon.Critical,
-               button=QtWidgets.QMessageBox.StandardButton.Close):
+def show_error(
+    text: str,
+    window=None,
+    icon=QtWidgets.QMessageBox.Icon.Critical,
+    button=QtWidgets.QMessageBox.StandardButton.Close,
+):
     error = get_default_message_box(text, window)
     error.setStandardButtons(button)
     error.setIcon(icon)
     error.exec_()
 
 
-def show_message(text: str,
-                 window=None,
-                 icon=QtWidgets.QMessageBox.Icon.Information,
-                 button=QtWidgets.QMessageBox.StandardButton.Close):
+def show_message(
+    text: str,
+    window=None,
+    icon=QtWidgets.QMessageBox.Icon.Information,
+    button=QtWidgets.QMessageBox.StandardButton.Close,
+):
     error = get_default_message_box(text, window)
     error.setIcon(icon)
     error.setStandardButtons(button)
@@ -73,34 +77,40 @@ def create_connection(window):
             password=config.password,
             user=config.username,
             database=config.database,
-            cursorclass=pymysql.cursors.DictCursor
+            cursorclass=pymysql.cursors.DictCursor,
         )
     except Exception as _:
-        show_error("The configuration present in the config.py file is invalid. You can create the database using "
-                   "the database.sql file.", window)
+        show_error(
+            "The configuration present in the config.py file is invalid. You can create the database using "
+            "the database.sql file.",
+            window,
+        )
         sys.exit(1)
 
 
 def check_user_exists(connection: pymysql.Connection, username: str) -> bool:
     with connection.cursor() as cursor:
-        query = "SELECT COUNT(id) AS count FROM unifiedpass.information WHERE username=%s"
+        query = (
+            "SELECT COUNT(id) AS count FROM unifiedpass.information WHERE username=%s"
+        )
         cursor.execute(query, username)
         result = cursor.fetchone()
 
-        if result["count"] > 0:
-            return True
-        else:
-            return False
+    return result["count"] > 0
 
 
 def get_hashed_password(password: str) -> str:
-    return hashlib.pbkdf2_hmac("SHA256", password.encode("UTF-8"), secure_salt.encode("UTF-8"), 10000, 32).hex()
+    return hashlib.pbkdf2_hmac(
+        "SHA256", password.encode("UTF-8"), secure_salt.encode("UTF-8"), 10000, 32
+    ).hex()
 
 
 def register_user(connection: pymysql.Connection, username: str, password: str):
     pass_hash = get_hashed_password(password)
     with connection.cursor() as cursor:
-        query = "INSERT INTO unifiedpass.information (username, password) VALUES (%s, %s)"
+        query = (
+            "INSERT INTO unifiedpass.information (username, password) VALUES (%s, %s)"
+        )
         cursor.execute(query, (username, pass_hash))
         connection.commit()
 

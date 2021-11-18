@@ -17,9 +17,13 @@ import hashlib
 characters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$%&()*+,-./:;<=>?@[]^_{|}~"
 
 
-def generate_entropy(website: str, email: str, number: int, master_password: str) -> int:
-    salt = (website + email + hex(number))
-    hex_entropy = hashlib.pbkdf2_hmac("sha256", master_password.encode("utf-8"), salt.encode("utf-8"), 10000, 32).hex()
+def generate_entropy(
+    website: str, email: str, number: int, master_password: str
+) -> int:
+    salt = website + email + hex(number)
+    hex_entropy = hashlib.pbkdf2_hmac(
+        "sha256", master_password.encode("utf-8"), salt.encode("utf-8"), 10000, 32
+    ).hex()
     return int(hex_entropy, 16)
 
 
@@ -37,6 +41,8 @@ def render_password(entropy: int, length: int) -> str:
     return consume_entropy("", entropy, length)
 
 
-def generate_password(website: str, email: str, number: int, length: int, master_password: str) -> str:
+def generate_password(
+    website: str, email: str, number: int, length: int, master_password: str
+) -> str:
     entropy = generate_entropy(website, email, number, master_password)
     return render_password(entropy, length)
