@@ -46,23 +46,16 @@ def generate_password(
         return
 
     if length > 40:
-        utils.show_error(
-            "Please make sure the password length is less than 40 characters.", window
-        )
+        utils.show_error("Please make sure the password length is less than 40 characters.", window)
         return
     elif length < 8:
-        utils.show_error(
-            "Please make sure the password length is greater than 8 characters.", window
-        )
+        utils.show_error("Please make sure the password length is greater than 8 characters.", window)
         return
 
-    final_pass = pass_hash.generate_password(
-        website.text(), email.text(), secure_number, length, master_password
-    )
+    final_pass = pass_hash.generate_password(website.text(), email.text(), secure_number, length, master_password)
     pyperclip.copy(final_pass)
     utils.show_message(
-        f"The password for {website.text()} is {final_pass}. The password has also been copied to "
-        "your clipboard.",
+        f"The password for {website.text()} is {final_pass}. The password has also been copied to your clipboard.",
         window,
     )
 
@@ -104,7 +97,7 @@ class GenerateUI:
 
         self.title.setGeometry(QtCore.QRect(240, 50, 461, 51))
         self.title.setFont(font)
-        self.title.setStyleSheet("color: #D0D0D0;\n" "letter-spacing: 2px;")
+        self.title.setStyleSheet("color: #D0D0D0;\nletter-spacing: 2px;")
         self.title.setAlignment(QtCore.Qt.AlignCenter)
         self.title.setObjectName("title")
 
@@ -115,38 +108,37 @@ class GenerateUI:
 
         self.website.setGeometry(QtCore.QRect(240, 160, 461, 31))
         self.website.setFont(font)
-        self.website.setStyleSheet(
-            "color: #D0D0D0;\n" "border: none;\n" "letter-spacing: 1px;"
-        )
+        self.website.setStyleSheet("color: #D0D0D0;\nborder: none;\nletter-spacing: 1px;")
         self.website.setObjectName("website")
+        self.website.returnPressed.connect(
+            lambda: generate_password(self.window, self.website, self.email, self.number, self._password)
+        )
 
         self.email.setGeometry(QtCore.QRect(240, 250, 461, 31))
         self.email.setFont(font)
-        self.email.setStyleSheet(
-            "color: #D0D0D0;\n" "border: none;\n" "letter-spacing: 1px;"
-        )
+        self.email.setStyleSheet("color: #D0D0D0;\nborder: none;\nletter-spacing: 1px;")
         self.email.setObjectName("email")
+        self.email.returnPressed.connect(
+            lambda: generate_password(self.window, self.website, self.email, self.number, self._password)
+        )
 
         self.number.setGeometry(QtCore.QRect(240, 340, 461, 31))
         self.number.setFont(font)
-        self.number.setStyleSheet(
-            "color: #D0D0D0;\n" "border: none;\n" "letter-spacing: 1px;"
-        )
+        self.number.setStyleSheet("color: #D0D0D0;\nborder: none;\nletter-spacing: 1px;")
         self.number.setInputMask("")
         self.number.setText("")
         self.number.setObjectName("number")
+        self.number.returnPressed.connect(
+            lambda: generate_password(self.window, self.website, self.email, self.number, self._password)
+        )
 
         self.generate_btn.setGeometry(QtCore.QRect(330, 430, 291, 51))
         self.generate_btn.setFont(font)
         self.generate_btn.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.generate_btn.setStyleSheet(
-            "color: #1f1f1f;\n" "background-color: #bdbdbd;\n" "border-radius: 8px;"
-        )
+        self.generate_btn.setStyleSheet("color: #1f1f1f;\nbackground-color: #bdbdbd;\nborder-radius: 8px;")
         self.generate_btn.setObjectName("generate_btn")
         self.generate_btn.clicked.connect(
-            lambda: generate_password(
-                self.window, self.website, self.email, self.number, self._password
-            )
+            lambda: generate_password(self.window, self.website, self.email, self.number, self._password)
         )
 
         self.underline.setGeometry(QtCore.QRect(240, 190, 461, 20))

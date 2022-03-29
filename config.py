@@ -12,12 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-"""
-Configure the MySQL database values accordingly.
-"""
+import json
 
-ip = "localhost"
-port = 3306
-username = "username"
-password = "password"
-database = "unifiedpass"
+with open("assets/database.json")as file:
+    locals().update(json.load(file))

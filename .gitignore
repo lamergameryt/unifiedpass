@@ -321,6 +321,6 @@ compile_commands.json
 *.cflags
 
 *.pdt
-config.py
 LICENSE.txt
 inno_setup/
+assets/database.json

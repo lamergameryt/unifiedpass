@@ -30,8 +30,7 @@ def check_credentials(window, connection: Connection, username: str, password: s
 
     if utils.verify_user(connection, username, password):
         utils.show_message(
-            f"Welcome, {username}. Please enter the information present in the window to generate "
-            f"your password.",
+            f"Welcome, {username}. Please enter the information present in the window to generate your password.",
             window,
         )
         ui = GenerateUI(window, password)
@@ -59,16 +58,14 @@ def register(
         return
 
     if len(password.text().rstrip()) < 8:
-        utils.show_error(
-            "Please make sure your password is atleast 8 characters long.", window
-        )
+        utils.show_error("Please make sure your password is atleast 8 characters long.", window)
         return
 
     result = pw.is_password_breached(password=password.text().rstrip())
     if result:
         utils.show_error(
             f"The password you're using has been leaked online {result} times. "
-            f"Please register with a different password.",
+            "Please register with a different password.",
             window,
         )
         return
@@ -105,14 +102,10 @@ class LoginUI:
         self.window.setStyleSheet("background-color: #1f1f1f")
         self.window.setTabShape(QtWidgets.QTabWidget.Rounded)
 
-        size_policy = QtWidgets.QSizePolicy(
-            QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred
-        )
+        size_policy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         size_policy.setHorizontalStretch(0)
         size_policy.setVerticalStretch(0)
-        size_policy.setHeightForWidth(
-            self.central_widget.sizePolicy().hasHeightForWidth()
-        )
+        size_policy.setHeightForWidth(self.central_widget.sizePolicy().hasHeightForWidth())
 
         self.central_widget.setSizePolicy(size_policy)
         self.central_widget.setObjectName("central_widget")
@@ -124,7 +117,7 @@ class LoginUI:
         font.setWeight(50)
         font.setStyleStrategy(QtGui.QFont.PreferAntialias)
         self.title.setFont(font)
-        self.title.setStyleSheet("color: #D0D0D0;\n" "letter-spacing: 2px;")
+        self.title.setStyleSheet("color: #D0D0D0;\nletter-spacing: 2px;")
         self.title.setAlignment(QtCore.Qt.AlignCenter)
         self.title.setObjectName("title")
         self.underline.setGeometry(QtCore.QRect(230, 240, 461, 20))
@@ -135,42 +128,36 @@ class LoginUI:
         font.setStyleStrategy(QtGui.QFont.PreferAntialias)
         self.username.setGeometry(QtCore.QRect(230, 210, 461, 31))
         self.username.setFont(font)
-        self.username.setStyleSheet(
-            "color: #D0D0D0;\n" "border: none;\n" "letter-spacing: 1px;"
-        )
+        self.username.setStyleSheet("color: #D0D0D0;\nborder: none;\nletter-spacing: 1px;")
         self.username.setObjectName("username")
+        self.username.returnPressed.connect(
+            lambda: check_credentials(self.window, self.connection, self.username.text(), self.password.text())
+        )
 
         self.password.setGeometry(QtCore.QRect(230, 290, 461, 31))
         self.password.setFont(font)
-        self.password.setStyleSheet(
-            "color: #D0D0D0;\n" "border: none;\n" "letter-spacing: 1px;"
-        )
+        self.password.setStyleSheet("color: #D0D0D0;\nborder: none;\nletter-spacing: 1px;")
         self.password.setEchoMode(QtWidgets.QLineEdit.Password)
         self.password.setObjectName("password")
+        self.password.returnPressed.connect(
+            lambda: check_credentials(self.window, self.connection, self.username.text(), self.password.text())
+        )
 
         self.login_btn.setGeometry(QtCore.QRect(230, 360, 211, 51))
         self.login_btn.setFont(font)
         self.login_btn.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.login_btn.setStyleSheet(
-            "color: #1f1f1f;\n" "background-color: #bdbdbd;\n" "border-radius: 8px;"
-        )
+        self.login_btn.setStyleSheet("color: #1f1f1f;\nbackground-color: #bdbdbd;\nborder-radius: 8px;")
         self.login_btn.setObjectName("login_btn")
         self.login_btn.clicked.connect(
-            lambda: check_credentials(
-                self.window, self.connection, self.username.text(), self.password.text()
-            )
+            lambda: check_credentials(self.window, self.connection, self.username.text(), self.password.text())
         )
 
         self.register_btn.setGeometry(QtCore.QRect(480, 360, 211, 51))
         self.register_btn.setFont(font)
         self.register_btn.setCursor(QtGui.QCursor(QtCore.Qt.PointingHandCursor))
-        self.register_btn.setStyleSheet(
-            "color: #1f1f1f;\n" "background-color: #bdbdbd;\n" "border-radius: 8px;"
-        )
+        self.register_btn.setStyleSheet("color: #1f1f1f;\nbackground-color: #bdbdbd;\nborder-radius: 8px;")
         self.register_btn.setObjectName("register_btn")
-        self.register_btn.clicked.connect(
-            lambda: register(self.window, self.connection, self.username, self.password)
-        )
+        self.register_btn.clicked.connect(lambda: register(self.window, self.connection, self.username, self.password))
 
         font = QtGui.QFont()
         font.setStyleStrategy(QtGui.QFont.PreferAntialias)

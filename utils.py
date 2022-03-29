@@ -90,9 +90,7 @@ def create_connection(window):
 
 def check_user_exists(connection: pymysql.Connection, username: str) -> bool:
     with connection.cursor() as cursor:
-        query = (
-            "SELECT COUNT(id) AS count FROM unifiedpass.information WHERE username=%s"
-        )
+        query = "SELECT COUNT(id) AS count FROM unifiedpass.information WHERE username=%s"
         cursor.execute(query, username)
         result = cursor.fetchone()
 
@@ -100,17 +98,13 @@ def check_user_exists(connection: pymysql.Connection, username: str) -> bool:
 
 
 def get_hashed_password(password: str) -> str:
-    return hashlib.pbkdf2_hmac(
-        "SHA256", password.encode("UTF-8"), secure_salt.encode("UTF-8"), 10000, 32
-    ).hex()
+    return hashlib.pbkdf2_hmac("SHA256", password.encode("UTF-8"), secure_salt.encode("UTF-8"), 10000, 32).hex()
 
 
 def register_user(connection: pymysql.Connection, username: str, password: str):
     pass_hash = get_hashed_password(password)
     with connection.cursor() as cursor:
-        query = (
-            "INSERT INTO unifiedpass.information (username, password) VALUES (%s, %s)"
-        )
+        query = "INSERT INTO unifiedpass.information (username, password) VALUES (%s, %s)"
         cursor.execute(query, (username, pass_hash))
         connection.commit()
 
